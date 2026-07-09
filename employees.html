@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Directory - CRT Industries</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .employee-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-speed) ease;
+            overflow: hidden;
+        }
+        .employee-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(59, 130, 246, 0.25);
+        }
+        .employee-avatar-wrap {
+            height: 140px;
+            background: rgba(15, 23, 42, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .employee-img-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.05);
+        }
+        .employee-status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--primary-glow-trans);
+            color: var(--primary-glow);
+            border: 1px solid var(--primary-glow);
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <header class="navbar navbar-expand-lg sticky-top main-navbar">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="logo-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="brand-text ms-2">CRT INDUSTRIES <span class="sub-brand">CHEMICAL LAB</span></span>
+            </a>
+            
+            <div class="d-none d-lg-flex align-items-center ms-auto">
+                <div class="system-status me-4">
+                    <span class="status-indicator online"></span>
+                    <span class="status-label">Database Online</span>
+                </div>
+                <div class="clock-display d-flex align-items-center">
+                    <i class="bi bi-clock-fill text-primary-glow me-2"></i>
+                    <span id="digital-clock" class="digital-time">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column h-100 justify-content-between">
+                    <div>
+                        <div class="user-profile-section text-center py-3 mb-4">
+                            <div class="profile-avatar mb-2">
+                                <i class="bi bi-person-badge-fill text-primary-glow"></i>
+                            </div>
+                            <h6 class="profile-name">Administrator</h6>
+                            <span class="profile-role">Secure Operator</span>
+                        </div>
+
+                        <ul class="nav flex-column sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">
+                                    <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="register.html">
+                                    <i class="bi bi-person-plus-fill me-2"></i> Register Employee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="attendance.html">
+                                    <i class="bi bi-camera-video-fill me-2"></i> Live Attendance
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="employees.html">
+                                    <i class="bi bi-people-fill me-2"></i> Employee Directory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="reports.html">
+                                    <i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Attendance Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings.html">
+                                    <i class="bi bi-gear-fill me-2"></i> Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="help.html">
+                                    <i class="bi bi-question-circle-fill me-2"></i> Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Page Content Frame -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content d-flex flex-column justify-content-between">
+                <div>
+                    <!-- Welcome Title -->
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-8">
+                            <h2 class="text-white fw-bold mb-1">Employee Directory</h2>
+                            <p class="text-silver mb-0 small">Manage corporate employee database records, credentials, and stored face templates.</p>
+                        </div>
+                        <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
+                            <a href="register.html" class="btn btn-primary-custom px-4 py-2">
+                                <i class="bi bi-person-plus-fill me-2"></i>Add Employee
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Search Filter Card -->
+                    <div class="glass-card p-4 mb-4">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label-custom">Search Registry</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent text-silver border-end-0 border-dark-blue" style="border-color: var(--border-color);">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" id="employeeSearchInput" onkeyup="applyFilters()" class="form-control form-control-custom border-start-0 border-dark-blue w-75" placeholder="Search by name, ID or email...">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label-custom">Department</label>
+                                <select id="departmentFilter" onchange="applyFilters()" class="form-select form-control-custom">
+                                    <option value="">All Departments</option>
+                                    <option value="Research & Development">Research & Development</option>
+                                    <option value="Chemical Analysis">Chemical Analysis</option>
+                                    <option value="Quality Assurance">Quality Assurance</option>
+                                    <option value="Safety & Compliance">Safety & Compliance</option>
+                                    <option value="Logistics & Storage">Logistics & Storage</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label-custom">Sort Order</label>
+                                <select id="sortFilter" onchange="applyFilters()" class="form-select form-control-custom">
+                                    <option value="name-asc">Name (A - Z)</option>
+                                    <option value="name-desc">Name (Z - A)</option>
+                                    <option value="id-asc">Employee ID (Asc)</option>
+                                    <option value="id-desc">Employee ID (Desc)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-2 text-end align-self-end">
+                                <button onclick="resetFilters()" class="btn btn-secondary-custom w-100 py-2"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cards Container -->
+                    <div class="row g-4" id="employeeCardsContainer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- View Profile Card Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content glass-card">
+                <div class="modal-header border-bottom border-dark-blue">
+                    <h5 class="modal-title text-white" id="detailsModalLabel"><i class="bi bi-person-bounding-box text-primary-glow me-2"></i>Employee Profile Card</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-4 text-center">
+                            <div class="rounded border border-primary border-2 shadow d-flex align-items-center justify-content-center bg-panel mx-auto" style="width: 100px; height: 100px;">
+                                <i class="bi bi-person-badge text-silver fs-1"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 text-start">
+                            <h4 id="detail-name" class="text-white fw-bold mb-1">-</h4>
+                            <span id="detail-id" class="badge bg-primary px-3 py-2 mb-2">ID: -</span>
+                            <div class="text-silver small"><i class="bi bi-building me-1"></i><span id="detail-dept">-</span></div>
+                            <div class="text-silver small mt-1"><i class="bi bi-briefcase me-1"></i><span id="detail-designation">-</span></div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-white border-bottom pb-2 mb-3 border-dark-blue small text-uppercase fw-semibold tracking-wide text-start">Contact & Contract</h6>
+                    <div class="row g-3 small mb-4 text-start">
+                        <div class="col-6">
+                            <span class="text-muted d-block">Phone Number</span>
+                            <strong id="detail-phone" class="text-white">-</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Email Address</span>
+                            <strong id="detail-email" class="text-white">-</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Joining Date</span>
+                            <strong id="detail-joining" class="text-white">-</strong>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-white border-bottom pb-2 mb-3 border-dark-blue small text-uppercase fw-semibold tracking-wide text-start">Biometric Data</h6>
+                    <div class="alert alert-secondary-custom d-flex align-items-center mb-0 text-start" role="alert" style="background: rgba(37,99,235,0.05); border: 1px solid var(--border-color);">
+                        <i class="bi bi-fingerprint text-primary-glow fs-4 me-3"></i>
+                        <div>
+                            <span class="d-block text-white small fw-bold">128D Face Template Saved</span>
+                            <span class="text-silver small" style="font-size: 0.75rem;">Local secure matches verified check-ins against this profile.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-dark-blue">
+                    <button type="button" class="btn btn-secondary-custom px-4" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Clock
+        function updateClock() {
+            const timeEl = document.getElementById('digital-clock');
+            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Render Cards
+        function renderEmployees() {
+            const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+            const container = document.getElementById('employeeCardsContainer');
+            container.innerHTML = '';
+            
+            if (employees.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5 text-muted">
+                        <i class="bi bi-people fs-1 d-block mb-3"></i>No employees registered in the system registry database.
+                    </div>
+                `;
+                return;
+            }
+            
+            employees.forEach(emp => {
+                const card = document.createElement('div');
+                card.className = 'col-12 col-sm-6 col-md-4 col-xl-3 employee-item-card';
+                card.setAttribute('data-id', emp.EmployeeID);
+                card.setAttribute('data-name', emp.Name);
+                card.setAttribute('data-dept', emp.Department);
+                card.setAttribute('data-designation', emp.Designation || 'N/A');
+                card.setAttribute('data-phone', emp.Phone || 'N/A');
+                card.setAttribute('data-email', emp.Email || 'N/A');
+                card.setAttribute('data-doj', emp.DateOfJoining || 'N/A');
+                
+                card.innerHTML = `
+                    <div class="employee-card d-flex flex-column h-100">
+                        <div class="employee-avatar-wrap">
+                            <span class="employee-status-badge">Active</span>
+                            <div class="employee-img-placeholder">
+                                <i class="bi bi-person-fill text-silver fs-2"></i>
+                            </div>
+                        </div>
+                        <div class="p-3 flex-grow-1">
+                            <h5 class="text-white fw-bold mb-1 text-truncate">${emp.Name}</h5>
+                            <span class="badge bg-primary-glow-trans text-primary-glow small px-2.5 py-1 mb-3">ID: ${emp.EmployeeID}</span>
+                            
+                            <div class="d-flex flex-column gap-1.5 small text-silver border-top pt-2 border-dark-blue">
+                                <div class="text-truncate"><i class="bi bi-briefcase-fill me-2 text-primary-glow"></i>${emp.Designation || 'N/A'}</div>
+                                <div class="text-truncate"><i class="bi bi-building-fill me-2 text-primary-glow"></i>${emp.Department}</div>
+                                <div class="text-truncate"><i class="bi bi-calendar-event-fill me-2 text-primary-glow"></i>Joined: ${emp.DateOfJoining}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex border-top border-dark-blue p-2.5 gap-2 justify-content-end bg-dark-blue-tint">
+                            <button onclick="viewEmployee('${emp.EmployeeID}')" class="btn btn-sm btn-action text-info-glow">
+                                <i class="bi bi-eye-fill"></i> View
+                            </button>
+                            <button onclick="deleteEmployee('${emp.EmployeeID}', '${emp.Name}')" class="btn btn-sm btn-action text-danger-glow">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('employeeSearchInput').value.toLowerCase();
+            const dept = document.getElementById('departmentFilter').value.toLowerCase();
+            const sortBy = document.getElementById('sortFilter').value;
+            const container = document.getElementById('employeeCardsContainer');
+            const items = Array.from(container.querySelectorAll('.employee-item-card'));
+            
+            let visible = 0;
+            
+            items.forEach(item => {
+                const name = item.getAttribute('data-name').toLowerCase();
+                const id = item.getAttribute('data-id').toLowerCase();
+                const email = item.getAttribute('data-email').toLowerCase();
+                const itemDept = item.getAttribute('data-dept').toLowerCase();
+                
+                const matchSearch = name.includes(query) || id.includes(query) || email.includes(query);
+                const matchDept = !dept || itemDept === dept;
+                
+                if (matchSearch && matchDept) {
+                    item.classList.remove('d-none');
+                    visible++;
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+            
+            // Sort
+            items.sort((a, b) => {
+                let valA, valB;
+                if (sortBy.startsWith('name-')) {
+                    valA = a.getAttribute('data-name').toLowerCase();
+                    valB = b.getAttribute('data-name').toLowerCase();
+                    return sortBy.endsWith('-asc') ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    valA = a.getAttribute('data-id').toLowerCase();
+                    valB = b.getAttribute('data-id').toLowerCase();
+                    return sortBy.endsWith('-asc') ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                }
+            });
+            
+            items.forEach(item => container.appendChild(item));
+        }
+
+        function resetFilters() {
+            document.getElementById('employeeSearchInput').value = '';
+            document.getElementById('departmentFilter').value = '';
+            document.getElementById('sortFilter').value = 'name-asc';
+            applyFilters();
+        }
+
+        function viewEmployee(id) {
+            const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+            const emp = employees.find(e => e.EmployeeID === id);
+            if (!emp) return;
+            
+            document.getElementById('detail-name').textContent = emp.Name;
+            document.getElementById('detail-id').textContent = 'ID: ' + emp.EmployeeID;
+            document.getElementById('detail-dept').textContent = emp.Department;
+            document.getElementById('detail-designation').textContent = emp.Designation || 'N/A';
+            document.getElementById('detail-phone').textContent = emp.Phone || 'N/A';
+            document.getElementById('detail-email').textContent = emp.Email || 'N/A';
+            document.getElementById('detail-joining').textContent = emp.DateOfJoining;
+            
+            const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+            modal.show();
+        }
+
+        function deleteEmployee(id, name) {
+            if (confirm(`Are you sure you want to delete employee "${name}" (${id})?`)) {
+                let employees = JSON.parse(localStorage.getItem('employees') || '[]');
+                employees = employees.filter(e => e.EmployeeID !== id);
+                localStorage.setItem('employees', JSON.stringify(employees));
+                
+                // Clear their attendance logs too
+                let attendance = JSON.parse(localStorage.getItem('attendance') || '[]');
+                attendance = attendance.filter(a => a.employee_id !== id);
+                localStorage.setItem('attendance', JSON.stringify(attendance));
+                
+                renderEmployees();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", renderEmployees);
+    </script>
+</body>
+</html>

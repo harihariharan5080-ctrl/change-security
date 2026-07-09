@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Analytics - CRT Industries</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .report-stat-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: var(--radius-md);
+        }
+        .quick-filter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--silver);
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        .quick-filter-btn:hover, .quick-filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary-glow);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff !important; color: #000 !important; }
+            .sidebar, .main-navbar { display: none !important; }
+            .main-content { margin: 0 !important; width: 100% !important; padding: 0 !important; }
+            .glass-card { background: #fff !important; color: #000 !important; border: none !important; box-shadow: none !important; }
+            .table-custom th { color: #000 !important; border-bottom: 2px solid #000 !important; }
+            .table-custom td { color: #333 !important; border-bottom: 1px solid #ccc !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <header class="navbar navbar-expand-lg sticky-top main-navbar no-print">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="logo-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="brand-text ms-2">CRT INDUSTRIES <span class="sub-brand">CHEMICAL LAB</span></span>
+            </a>
+            
+            <div class="d-none d-lg-flex align-items-center ms-auto">
+                <div class="system-status me-4">
+                    <span class="status-indicator online"></span>
+                    <span class="status-label">Database Online</span>
+                </div>
+                <div class="clock-display d-flex align-items-center">
+                    <i class="bi bi-clock-fill text-primary-glow me-2"></i>
+                    <span id="digital-clock" class="digital-time">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse no-print">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column h-100 justify-content-between">
+                    <div>
+                        <div class="user-profile-section text-center py-3 mb-4">
+                            <div class="profile-avatar mb-2">
+                                <i class="bi bi-person-badge-fill text-primary-glow"></i>
+                            </div>
+                            <h6 class="profile-name">Administrator</h6>
+                            <span class="profile-role">Secure Operator</span>
+                        </div>
+
+                        <ul class="nav flex-column sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">
+                                    <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="register.html">
+                                    <i class="bi bi-person-plus-fill me-2"></i> Register Employee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="attendance.html">
+                                    <i class="bi bi-camera-video-fill me-2"></i> Live Attendance
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="employees.html">
+                                    <i class="bi bi-people-fill me-2"></i> Employee Directory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="reports.html">
+                                    <i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Attendance Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings.html">
+                                    <i class="bi bi-gear-fill me-2"></i> Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="help.html">
+                                    <i class="bi bi-question-circle-fill me-2"></i> Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Page Content Frame -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content d-flex flex-column justify-content-between">
+                <div>
+                    <!-- Welcome Title -->
+                    <div class="row mb-4 no-print">
+                        <div class="col">
+                            <h2 class="text-white fw-bold mb-1">Attendance Analytics & Reports</h2>
+                            <p class="text-silver mb-0 small">Filter attendance logs, analyze statistics, and compile exports.</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Range Filters -->
+                    <div class="glass-card p-4 mb-4 no-print">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 border-bottom pb-2 border-dark-blue">
+                            <h6 class="text-white fw-bold mb-0 small uppercase tracking-wide"><i class="bi bi-funnel-fill text-primary-glow me-2"></i>Filter Records</h6>
+                            <div class="d-flex gap-2">
+                                <button onclick="setQuickFilter('today')" class="quick-filter-btn active" id="btn-today">Today</button>
+                                <button onclick="setQuickFilter('yesterday')" class="quick-filter-btn" id="btn-yesterday">Yesterday</button>
+                                <button onclick="setQuickFilter('weekly')" class="quick-filter-btn" id="btn-weekly">Weekly</button>
+                                <button onclick="setQuickFilter('monthly')" class="quick-filter-btn" id="btn-monthly">Monthly</button>
+                            </div>
+                        </div>
+                        
+                        <form id="filterForm" onsubmit="event.preventDefault(); loadReportData();">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-4">
+                                    <label for="empSearch" class="form-label-custom">Search Employee</label>
+                                    <input type="text" id="empSearch" class="form-control form-control-custom w-100" placeholder="ID or name...">
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label for="deptSelect" class="form-label-custom">Department</label>
+                                    <select id="deptSelect" class="form-select form-control-custom w-100">
+                                        <option value="">All Departments</option>
+                                        <option value="Research & Development">Research & Development</option>
+                                        <option value="Chemical Analysis">Chemical Analysis</option>
+                                        <option value="Quality Assurance">Quality Assurance</option>
+                                        <option value="Safety & Compliance">Safety & Compliance</option>
+                                        <option value="Logistics & Storage">Logistics & Storage</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-2">
+                                    <label for="startDate" class="form-label-custom">Start Date</label>
+                                    <input type="date" id="startDate" class="form-control form-control-custom w-100">
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-2">
+                                    <label for="endDate" class="form-label-custom">End Date</label>
+                                    <input type="date" id="endDate" class="form-control form-control-custom w-100">
+                                </div>
+                                <div class="col-12 mt-3 text-end">
+                                    <button type="submit" class="btn btn-primary-custom px-4 py-2"><i class="bi bi-search me-1"></i>Search Database</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-6 col-md-3">
+                            <div class="report-stat-card d-flex align-items-center">
+                                <div class="stat-icon bg-success-glow-trans text-success-glow p-2 small"><i class="bi bi-check-circle-fill"></i></div>
+                                <div class="ms-2">
+                                    <span class="text-silver small d-block" style="font-size: 0.72rem;">Present Rate</span>
+                                    <strong class="text-white" id="rep-present-rate">0%</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="report-stat-card d-flex align-items-center">
+                                <div class="stat-icon bg-danger-glow-trans text-danger-glow p-2 small"><i class="bi bi-x-circle-fill"></i></div>
+                                <div class="ms-2">
+                                    <span class="text-silver small d-block" style="font-size: 0.72rem;">Absent Rate</span>
+                                    <strong class="text-white" id="rep-absent-rate">0%</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="report-stat-card d-flex align-items-center">
+                                <div class="stat-icon bg-warning-glow-trans text-warning-glow p-2 small"><i class="bi bi-clock-fill"></i></div>
+                                <div class="ms-2">
+                                    <span class="text-silver small d-block" style="font-size: 0.72rem;">Late Entries</span>
+                                    <strong class="text-white" id="rep-late-entries">0</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="report-stat-card d-flex align-items-center">
+                                <div class="stat-icon bg-primary-glow-trans text-primary-glow p-2 small"><i class="bi bi-people-fill"></i></div>
+                                <div class="ms-2">
+                                    <span class="text-silver small d-block" style="font-size: 0.72rem;">Total Checked</span>
+                                    <strong class="text-white" id="rep-total-checked">0</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ledger Table -->
+                    <div class="glass-card p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3 no-print">
+                            <h5 class="text-white fw-semibold mb-0"><i class="bi bi-file-earmark-text text-primary-glow me-2"></i>Log Ledger</h5>
+                            <div class="export-buttons d-flex gap-2">
+                                <button onclick="exportCSV()" class="btn btn-secondary-custom btn-sm py-2 px-3 fw-semibold">
+                                    <i class="bi bi-file-earmark-spreadsheet-fill text-primary-glow me-2"></i>Export CSV
+                                </button>
+                                <button onclick="printLedger()" class="btn btn-secondary-custom btn-sm py-2 px-3 fw-semibold">
+                                    <i class="bi bi-printer-fill text-silver me-2"></i>Print Ledger
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Printable banner -->
+                        <div class="print-header d-none text-center mb-4" id="print-banner">
+                            <h2 class="fw-bold mb-1">CRT INDUSTRIES CHEMICAL LAB</h2>
+                            <h5>Attendance Verification Ledger</h5>
+                            <hr>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-custom align-middle">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Department</th>
+                                        <th scope="col">Designation</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Time</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportsTableBody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Clock
+        function updateClock() {
+            const timeEl = document.getElementById('digital-clock');
+            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Load dynamic data
+        document.addEventListener("DOMContentLoaded", () => {
+            setQuickFilter('today');
+        });
+
+        function setQuickFilter(range) {
+            document.querySelectorAll('.quick-filter-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${range}`).classList.add('active');
+            
+            const startInput = document.getElementById('startDate');
+            const endInput = document.getElementById('endDate');
+            
+            const today = new Date();
+            const todayStr = "2026-07-09"; // Mock relative today ISO
+            
+            startInput.value = todayStr;
+            endInput.value = todayStr;
+            
+            if (range === 'yesterday') {
+                startInput.value = "2026-07-08";
+                endInput.value = "2026-07-08";
+            } else if (range === 'weekly') {
+                startInput.value = "2026-07-02";
+                endInput.value = todayStr;
+            } else if (range === 'monthly') {
+                startInput.value = "2026-06-09";
+                endInput.value = todayStr;
+            }
+            
+            loadReportData();
+        }
+
+        function loadReportData() {
+            const query = document.getElementById('empSearch').value.toLowerCase();
+            const dept = document.getElementById('deptSelect').value.toLowerCase();
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            
+            const attendance = JSON.parse(localStorage.getItem('attendance') || '[]');
+            const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+            
+            const tbody = document.getElementById('reportsTableBody');
+            tbody.innerHTML = '';
+            
+            // Format dates from YYYY-MM-DD to DD-MM-YYYY for storage comparison
+            const dateToEpoch = (dStr) => dStr ? new Date(dStr).getTime() : 0;
+            const epochStart = dateToEpoch(start);
+            const epochEnd = dateToEpoch(end);
+            
+            // Filter logs
+            const filtered = attendance.filter(log => {
+                const name = log.name.toLowerCase();
+                const id = log.employee_id.toLowerCase();
+                const logDept = log.department.toLowerCase();
+                
+                // convert "09-07-2026" to epoch
+                const parts = log.date.split('-');
+                const logEpoch = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime();
+                
+                const matchSearch = name.includes(query) || id.includes(query);
+                const matchDept = !dept || logDept === dept;
+                
+                let matchDate = true;
+                if (start) matchDate = matchDate && (logEpoch >= epochStart);
+                if (end) matchDate = matchDate && (logEpoch <= epochEnd);
+                
+                return matchSearch && matchDept && matchDate;
+            });
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="bi bi-file-earmark-x fs-3 d-block mb-2"></i>No matching check-in records found.
+                        </td>
+                    </tr>
+                `;
+                updateMetrics(0, 0, 0);
+                return;
+            }
+            
+            let presents = 0;
+            let absents = 0;
+            let lates = 0;
+            
+            filtered.forEach(row => {
+                presents++;
+                const statusClass = row.status === 'Present' ? 'text-success fw-bold' : 'text-danger fw-bold';
+                const statusIcon = row.status === 'Present' ? 'bi-check-circle-fill' : 'bi-x-circle-fill';
+                
+                // Late calculations
+                if (row.time && row.time !== 'N/A') {
+                    const checkTime = row.time.split(':');
+                    const hrs = parseInt(checkTime[0]);
+                    const mins = parseInt(checkTime[1]);
+                    const isPM = row.time.toLowerCase().includes('pm');
+                    
+                    if (isPM && hrs < 12) {
+                        lates++;
+                    } else if (!isPM && (hrs > 9 || (hrs === 9 && mins > 15))) {
+                        lates++;
+                    }
+                }
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="text-primary fw-bold">${row.employee_id}</span></td>
+                    <td><span class="text-white fw-semibold">${row.name}</span></td>
+                    <td>${row.department}</td>
+                    <td>${row.designation || 'N/A'}</td>
+                    <td>${row.date}</td>
+                    <td>${row.time}</td>
+                    <td>
+                        <span class="${statusClass} d-flex align-items-center">
+                            <i class="bi ${statusIcon} me-1"></i>${row.status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            updateMetrics(presents, absents, lates);
+        }
+
+        function updateMetrics(presents, absents, lates) {
+            const total = presents + absents;
+            const presentRate = total > 0 ? Math.round((presents / total) * 100) : 0;
+            const absentRate = total > 0 ? Math.round((absents / total) * 100) : 0;
+            
+            document.getElementById('rep-present-rate').textContent = presentRate + "%";
+            document.getElementById('rep-absent-rate').textContent = absentRate + "%";
+            document.getElementById('rep-late-entries').textContent = lates;
+            document.getElementById('rep-total-checked').textContent = total;
+        }
+
+        function exportCSV() {
+            const table = document.getElementById('reportsTableBody');
+            const rows = Array.from(table.querySelectorAll('tr'));
+            if (rows.length === 0 || rows[0].innerText.includes('No matching')) {
+                alert("No records to export.");
+                return;
+            }
+            
+            let csv = 'ID,Name,Department,Designation,Date,Time,Status\n';
+            rows.forEach(r => {
+                const cols = Array.from(r.querySelectorAll('td'));
+                if (cols.length < 7) return;
+                const line = cols.map(c => '"' + c.innerText.trim().replace(/"/g, '""') + '"').join(',');
+                csv += line + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', 'CRT_Attendance_Report.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function printLedger() {
+            const banner = document.getElementById('print-banner');
+            banner.classList.remove('d-none');
+            window.print();
+            banner.classList.add('d-none');
+        }
+    </script>
+</body>
+</html>

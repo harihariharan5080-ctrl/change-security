@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Employee - CRT Industries</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .face-guide-circle {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border: 2px dashed rgba(59, 130, 246, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 5;
+            box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.4);
+        }
+        .hud-tag {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            z-index: 6;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <header class="navbar navbar-expand-lg sticky-top main-navbar">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="logo-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="brand-text ms-2">CRT INDUSTRIES <span class="sub-brand">CHEMICAL LAB</span></span>
+            </a>
+            
+            <!-- Right Utilities -->
+            <div class="d-none d-lg-flex align-items-center ms-auto">
+                <div class="system-status me-4">
+                    <span class="status-indicator online"></span>
+                    <span class="status-label">Database Online</span>
+                </div>
+                <div class="clock-display d-flex align-items-center">
+                    <i class="bi bi-clock-fill text-primary-glow me-2"></i>
+                    <span id="digital-clock" class="digital-time">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column h-100 justify-content-between">
+                    <div>
+                        <div class="user-profile-section text-center py-3 mb-4">
+                            <div class="profile-avatar mb-2">
+                                <i class="bi bi-person-badge-fill text-primary-glow"></i>
+                            </div>
+                            <h6 class="profile-name">Administrator</h6>
+                            <span class="profile-role">Secure Operator</span>
+                        </div>
+
+                        <ul class="nav flex-column sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">
+                                    <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="register.html">
+                                    <i class="bi bi-person-plus-fill me-2"></i> Register Employee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="attendance.html">
+                                    <i class="bi bi-camera-video-fill me-2"></i> Live Attendance
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="employees.html">
+                                    <i class="bi bi-people-fill me-2"></i> Employee Directory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="reports.html">
+                                    <i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Attendance Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings.html">
+                                    <i class="bi bi-gear-fill me-2"></i> Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="help.html">
+                                    <i class="bi bi-question-circle-fill me-2"></i> Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Page Content Frame -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content d-flex flex-column justify-content-between">
+                <div>
+                    <!-- Welcome Title -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <h2 class="text-white fw-bold mb-1">Employee Face Registration</h2>
+                            <p class="text-silver mb-0 small">Create a new biometric record. Registration is strictly webcam-based.</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Registration Form -->
+                        <div class="col-12 col-lg-5">
+                            <div class="glass-card p-4">
+                                <h5 class="text-white fw-semibold mb-3 border-bottom pb-2 border-dark-blue">
+                                    <i class="bi bi-person-lines-fill text-primary-glow me-2"></i>Profile Details
+                                </h5>
+                                
+                                <form id="registerForm" class="needs-validation" novalidate>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <label for="employee_id" class="form-label-custom">Employee ID <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-custom w-100" id="employee_id" name="employee_id" placeholder="CRT-105" required>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="name" class="form-label-custom">Full Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-custom w-100" id="name" name="name" placeholder="John Doe" required>
+                                        </div>
+                                        
+                                        <div class="col-12 col-md-6">
+                                            <label for="department" class="form-label-custom">Department</label>
+                                            <select class="form-select form-control-custom w-100" id="department" name="department">
+                                                <option value="Research & Development">Research & Development</option>
+                                                <option value="Chemical Analysis" selected>Chemical Analysis</option>
+                                                <option value="Quality Assurance">Quality Assurance</option>
+                                                <option value="Safety & Compliance">Safety & Compliance</option>
+                                                <option value="Logistics & Storage">Logistics & Storage</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="designation" class="form-label-custom">Designation</label>
+                                            <input type="text" class="form-control form-control-custom w-100" id="designation" name="designation" placeholder="Lead Analyst" required>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <label for="phone" class="form-label-custom">Mobile Number</label>
+                                            <input type="tel" class="form-control form-control-custom w-100" id="phone" name="phone" placeholder="e.g. +1234567890">
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <label for="email" class="form-label-custom">Email Address</label>
+                                            <input type="email" class="form-control form-control-custom w-100" id="email" name="email" placeholder="name@crt.com">
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <label for="date_of_joining" class="form-label-custom">Date of Joining</label>
+                                            <input type="date" class="form-control form-control-custom w-100" id="date_of_joining" name="date_of_joining" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2 mt-4">
+                                        <button type="submit" id="startScanBtn" class="btn btn-primary-custom flex-grow-1 py-3 fw-bold">
+                                            <i class="bi bi-camera-fill me-2"></i>Start Camera
+                                        </button>
+                                        <button type="button" class="btn btn-secondary-custom px-3" onclick="resetFormState()">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Live Scanner Feed -->
+                        <div class="col-12 col-lg-7">
+                            <div class="glass-card p-4 h-100 d-flex flex-column gap-3">
+                                <h5 class="text-white fw-semibold border-bottom pb-2 border-dark-blue mb-0">
+                                    <i class="bi bi-camera-video me-2 text-primary-glow"></i>Face Enrollment Scanner
+                                </h5>
+                                
+                                <div class="camera-stream-wrapper text-center rounded overflow-hidden position-relative flex-grow-1 d-flex align-items-center justify-content-center bg-black" style="min-height: 380px;">
+                                    <div id="alignment-guide" class="face-guide-circle d-none"></div>
+                                    
+                                    <div id="quality-hud" class="hud-tag d-none" style="top: 15px; left: 15px;">QUALITY: <span class="text-success" id="quality-val">OPTIMAL</span></div>
+                                    <div id="timer-hud" class="hud-tag d-none" style="top: 15px; right: 15px;">ETA: <span class="text-primary-glow" id="countdown-val">5s</span></div>
+                                    <div id="guidance-hud" class="hud-tag d-none w-75 text-center" style="bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(37,99,235,0.9); border-color: var(--primary-glow); font-size: 0.85rem; font-weight: 600;">
+                                        <span id="guidance-msg">ALIGN YOUR FACE</span>
+                                    </div>
+                                    
+                                    <video id="webcam-view" class="w-100 h-100 d-none" autoplay playsinline muted style="object-fit: cover; transform: scaleX(-1);"></video>
+                                    
+                                    <div id="camera-placeholder" class="camera-placeholder text-center p-4">
+                                        <i class="bi bi-camera-video-off text-muted fs-1 mb-3"></i>
+                                        <p class="text-silver fw-semibold mb-1">Scanner Offline</p>
+                                        <p class="text-muted small">Fill out details and trigger camera to engage enrollment scan.</p>
+                                    </div>
+                                    
+                                    <div id="scan-progress-overlay" class="scan-progress-overlay d-none z-3 position-absolute">
+                                        <div class="spinner-border text-primary-glow mb-2" role="status"></div>
+                                        <p id="scan-progress-text" class="text-white fw-semibold mb-0">Engaging Scanner...</p>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="d-flex justify-content-between text-silver small mb-1">
+                                        <span>Biometric Compiled Progress</span>
+                                        <span id="progress-percent" class="fw-bold">0%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background: rgba(255, 255, 255, 0.05);">
+                                        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="border-top border-dark-blue mt-5 pt-4 pb-2 text-silver text-center text-md-start">
+                    <div class="row g-3 small">
+                        <div class="col-12 col-md-6">
+                            <strong>CRT Industries Chemical Laboratory</strong>
+                            <p class="mb-0 text-muted">Biometric Face Authentication System | Version 2.1.0-Static</p>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <span class="d-block text-muted">Contact: support@crt.lab.internal</span>
+                        </div>
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card border border-success">
+                <div class="modal-header border-bottom border-dark-blue text-white">
+                    <h5 class="modal-title" id="successModalLabel"><i class="bi bi-check-circle-fill text-success-glow me-2"></i>Registration Success</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="success-checkmark mb-3">
+                        <i class="bi bi-shield-check text-success-glow fs-1"></i>
+                    </div>
+                    <h5 class="text-white mb-1" id="successEmployeeName">Employee Registered</h5>
+                    <p class="text-muted small mb-3" id="successEmployeeId">ID: CRT-000</p>
+                    <div class="alert alert-success mx-3 text-start small border-0" style="background: rgba(22, 163, 74, 0.1); color: var(--success-glow);">
+                        <i class="bi bi-info-circle-fill me-2"></i>Biometric face template compiled successfully and committed to local browser databases.
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-dark-blue">
+                    <button type="button" class="btn btn-primary-custom px-4" data-bs-dismiss="modal" onclick="resetFormState()">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Clock
+        function updateClock() {
+            const timeEl = document.getElementById('digital-clock');
+            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        let cameraStream = null;
+        let progressInterval = null;
+        let captureProgress = 0;
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!this.checkValidity()) {
+                e.stopPropagation();
+                this.classList.add('was-validated');
+                return;
+            }
+            
+            const startBtn = document.getElementById('startScanBtn');
+            const inputs = this.querySelectorAll('input, select, button');
+            inputs.forEach(el => el.disabled = true);
+            
+            startBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Starting camera...`;
+            
+            const video = document.getElementById('webcam-view');
+            const placeholder = document.getElementById('camera-placeholder');
+            const scanOverlay = document.getElementById('scan-progress-overlay');
+            
+            scanOverlay.classList.remove('d-none');
+            
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    cameraStream = stream;
+                    video.srcObject = stream;
+                    video.classList.remove('d-none');
+                    placeholder.classList.add('d-none');
+                    scanOverlay.classList.add('d-none');
+                    
+                    // Show guide indicators
+                    document.getElementById('alignment-guide').classList.remove('d-none');
+                    document.getElementById('quality-hud').classList.remove('d-none');
+                    document.getElementById('timer-hud').classList.remove('d-none');
+                    document.getElementById('guidance-hud').classList.remove('d-none');
+                    
+                    startBtn.innerHTML = `<i class="bi bi-camera-fill me-2"></i>Scanning Face...`;
+                    
+                    // Start progress loop
+                    captureProgress = 0;
+                    progressInterval = setInterval(updateProgress, 100);
+                })
+                .catch(err => {
+                    console.error("Camera fail:", err);
+                    alert("No camera sensor connected. Simulating static scans.");
+                    scanOverlay.classList.add('d-none');
+                    
+                    // Offline fallback simulator
+                    placeholder.classList.add('d-none');
+                    document.getElementById('alignment-guide').classList.remove('d-none');
+                    document.getElementById('quality-hud').classList.remove('d-none');
+                    document.getElementById('timer-hud').classList.remove('d-none');
+                    document.getElementById('guidance-hud').classList.remove('d-none');
+                    
+                    startBtn.innerHTML = `<i class="bi bi-camera-fill me-2"></i>Scanning Face (Simulated)...`;
+                    captureProgress = 0;
+                    progressInterval = setInterval(updateProgress, 100);
+                });
+        });
+
+        function updateProgress() {
+            captureProgress += 2; // progress goes to 100 in 5 seconds
+            
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            const guidanceMsg = document.getElementById('guidance-msg');
+            const countdownVal = document.getElementById('countdown-val');
+            const qualityVal = document.getElementById('quality-val');
+            
+            progressBar.style.width = captureProgress + "%";
+            progressPercent.textContent = captureProgress + "%";
+            
+            const remaining = Math.max(0, Math.ceil((100 - captureProgress) / 20));
+            countdownVal.textContent = remaining + "s";
+            
+            if (captureProgress < 20) {
+                guidanceMsg.textContent = "ALIGN YOUR FACE IN THE CENTER";
+                qualityVal.textContent = "ANALYZING...";
+                qualityVal.className = "text-warning";
+            } else if (captureProgress < 40) {
+                guidanceMsg.textContent = "LOOK SLIGHTLY LEFT";
+                qualityVal.textContent = "OPTIMAL";
+                qualityVal.className = "text-success";
+            } else if (captureProgress < 60) {
+                guidanceMsg.textContent = "LOOK SLIGHTLY RIGHT";
+            } else if (captureProgress < 80) {
+                guidanceMsg.textContent = "LOOK SLIGHTLY UP";
+            } else if (captureProgress < 100) {
+                guidanceMsg.textContent = "LOOK SLIGHTLY DOWN";
+            } else {
+                clearInterval(progressInterval);
+                saveEmployeeRecord();
+            }
+        }
+
+        function saveEmployeeRecord() {
+            const empId = document.getElementById('employee_id').value;
+            const name = document.getElementById('name').value;
+            const dept = document.getElementById('department').value;
+            const designation = document.getElementById('designation').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const doj = document.getElementById('date_of_joining').value;
+            
+            const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+            
+            // Check if duplicate ID
+            const isDuplicate = employees.some(e => e.EmployeeID === empId);
+            if (isDuplicate) {
+                alert(`Error: Employee ID "${empId}" is already registered.`);
+                resetFormState();
+                return;
+            }
+            
+            const newEmp = {
+                EmployeeID: empId,
+                Name: name,
+                Department: dept,
+                Designation: designation,
+                Phone: phone || "N/A",
+                Email: email || "N/A",
+                DateOfJoining: doj,
+                CreatedAt: new Date().toLocaleString()
+            };
+            
+            employees.push(newEmp);
+            localStorage.setItem('employees', JSON.stringify(employees));
+            
+            document.getElementById('successEmployeeName').textContent = name;
+            document.getElementById('successEmployeeId').textContent = 'ID: ' + empId;
+            
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+
+        function resetFormState() {
+            clearInterval(progressInterval);
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            
+            const video = document.getElementById('webcam-view');
+            const placeholder = document.getElementById('camera-placeholder');
+            
+            video.srcObject = null;
+            video.classList.add('d-none');
+            placeholder.classList.remove('d-none');
+            
+            // Hide guides
+            document.getElementById('alignment-guide').classList.add('d-none');
+            document.getElementById('quality-hud').classList.add('d-none');
+            document.getElementById('timer-hud').classList.add('d-none');
+            document.getElementById('guidance-hud').classList.add('d-none');
+            
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('progress-percent').textContent = '0%';
+            
+            const form = document.getElementById('registerForm');
+            form.reset();
+            form.classList.remove('was-validated');
+            
+            const inputs = form.querySelectorAll('input, select, button');
+            inputs.forEach(el => el.disabled = false);
+            document.getElementById('startScanBtn').innerHTML = `<i class="bi bi-camera-fill me-2"></i>Start Camera`;
+            
+            // Re-set date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date_of_joining').value = today;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date_of_joining').value = today;
+        });
+    </script>
+</body>
+</html>

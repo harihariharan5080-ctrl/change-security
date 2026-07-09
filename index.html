@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Overview - CRT Industries</title>
+    <!-- Google Fonts: Poppins & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Summary Grid After Theme Overrides */
+        .stat-card.stat-grid-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        .stat-card.stat-grid-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+        }
+        .stat-grid-card.blue::after { background: var(--primary); }
+        .stat-grid-card.green::after { background: var(--success); }
+        .stat-grid-card.orange::after { background: var(--warning); }
+        .stat-grid-card.red::after { background: var(--danger); }
+        
+        /* Bar chart */
+        .mock-chart-container {
+            height: 180px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding-top: 20px;
+        }
+        .chart-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 14%;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .chart-bar {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            background: linear-gradient(to top, rgba(37, 99, 235, 0.2), var(--primary-glow));
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+        }
+        .chart-bar:hover {
+            background: linear-gradient(to top, rgba(59, 130, 246, 0.5), #60a5fa);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            cursor: pointer;
+        }
+        .chart-label {
+            font-size: 0.7rem;
+            color: var(--silver);
+            margin-top: 6px;
+        }
+        .chart-tooltip {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .chart-bar:hover .chart-tooltip {
+            opacity: 1;
+        }
+        
+        /* Donut chart */
+        .donut-chart-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 180px;
+        }
+        .radial-progress-ring {
+            transform: rotate(-90deg);
+        }
+        .radial-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 8;
+        }
+        .radial-circle-val {
+            fill: none;
+            stroke: var(--success);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 35.1;
+            transition: stroke-dashoffset 1s ease;
+        }
+        .radial-center-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            fill: #fff;
+        }
+        .radial-center-sub {
+            font-size: 0.7rem;
+            fill: var(--silver);
+        }
+
+        .terminal-feed {
+            background-color: #05080f;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            height: 180px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--silver);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+        }
+        .terminal-line {
+            margin-bottom: 6px;
+            line-height: 1.4;
+            display: flex;
+        }
+        .terminal-time {
+            color: #2196F3;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .terminal-msg {
+            color: #e2e8f0;
+        }
+        .terminal-msg.success { color: #4CAF50; }
+        .terminal-msg.warning { color: #FFC107; }
+        .terminal-msg.info { color: #00BCD4; }
+
+        /* Camera display overlay */
+        .scanner-hud {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 12;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(59, 130, 246, 0.95);
+        }
+        .scanner-hud-bottom {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 12;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(59, 130, 246, 0.95);
+        }
+        @keyframes scanline-move {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <header class="navbar navbar-expand-lg sticky-top main-navbar">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="logo-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="brand-text ms-2">CRT INDUSTRIES <span class="sub-brand">CHEMICAL LAB</span></span>
+            </a>
+            
+            <!-- Right Utilities -->
+            <div class="d-none d-lg-flex align-items-center ms-auto">
+                <div class="system-status me-4">
+                    <span class="status-indicator online"></span>
+                    <span class="status-label">Database Online</span>
+                </div>
+                
+                <!-- Digital Clock Header -->
+                <div class="clock-display d-flex align-items-center">
+                    <i class="bi bi-clock-fill text-primary-glow me-2"></i>
+                    <span id="digital-clock" class="digital-time">00:00:00 AM</span>
+                    <span id="digital-date" class="digital-date ms-2">July 9, 2026</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column h-100 justify-content-between">
+                    <div>
+                        <div class="user-profile-section text-center py-3 mb-4">
+                            <div class="profile-avatar mb-2">
+                                <i class="bi bi-person-badge-fill text-primary-glow"></i>
+                            </div>
+                            <h6 class="profile-name">Administrator</h6>
+                            <span class="profile-role">Secure Operator</span>
+                        </div>
+
+                        <ul class="nav flex-column sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="index.html">
+                                    <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="register.html">
+                                    <i class="bi bi-person-plus-fill me-2"></i> Register Employee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="attendance.html">
+                                    <i class="bi bi-camera-video-fill me-2"></i> Live Attendance
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="employees.html">
+                                    <i class="bi bi-people-fill me-2"></i> Employee Directory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="reports.html">
+                                    <i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Attendance Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings.html">
+                                    <i class="bi bi-gear-fill me-2"></i> Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="help.html">
+                                    <i class="bi bi-question-circle-fill me-2"></i> Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Page Content Frame -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content d-flex flex-column justify-content-between">
+                <div>
+                    <!-- Welcome Title -->
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-12">
+                            <h2 class="text-white fw-bold mb-1">Laboratory Console</h2>
+                            <p class="text-silver mb-0 small">Secure Biometric Registry & Verification Node | CRT Industries Chemical Lab</p>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Stats Grid -->
+                    <div class="row mb-4 g-4">
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card blue d-flex align-items-center">
+                                <div class="stat-icon bg-primary-glow-trans text-primary">
+                                    <i class="bi bi-people-fill text-primary-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">Total Profiles</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" id="stat-total">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card green d-flex align-items-center">
+                                <div class="stat-icon bg-success-glow-trans text-success">
+                                    <i class="bi bi-person-check-fill text-success-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">Present Today</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" id="stat-present">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card red d-flex align-items-center">
+                                <div class="stat-icon bg-danger-glow-trans text-danger">
+                                    <i class="bi bi-person-x-fill text-danger-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">Absent Today</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" id="stat-absent">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card orange d-flex align-items-center">
+                                <div class="stat-icon bg-warning-glow-trans text-warning">
+                                    <i class="bi bi-alarm-fill text-warning-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">Late Arrivals</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" id="stat-late">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extra Stats Grid -->
+                    <div class="row mb-4 g-4">
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card red d-flex align-items-center">
+                                <div class="stat-icon bg-danger-glow-trans text-danger">
+                                    <i class="bi bi-shield-exclamation text-danger-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">Unknown Attempts</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" id="stat-attempts">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card green d-flex align-items-center">
+                                <div class="stat-icon bg-success-glow-trans text-success">
+                                    <i class="bi bi-camera-video-fill text-success-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">Camera Sensor</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" style="font-size: 1.15rem;">ONLINE</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card green d-flex align-items-center">
+                                <div class="stat-icon bg-success-glow-trans text-success">
+                                    <i class="bi bi-database-fill-check text-success-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">Database Status</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" style="font-size: 1.15rem;">LOCALSTORAGE</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="glass-card stat-card stat-grid-card blue d-flex align-items-center">
+                                <div class="stat-icon bg-primary-glow-trans text-primary">
+                                    <i class="bi bi-heart-pulse-fill text-primary-glow"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="stat-label text-silver small text-uppercase">System Health</span>
+                                    <h3 class="stat-value text-white fw-bold mb-0" style="font-size: 1.15rem;">100% OK</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Camera & Actions Grid -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-12 col-lg-7 col-xl-8">
+                            <div class="glass-card p-4 h-100 d-flex flex-column gap-3">
+                                <div class="d-flex align-items-center justify-content-between border-bottom pb-2 border-dark-blue">
+                                    <h5 class="text-white fw-semibold mb-0"><i class="bi bi-camera-video me-2 text-primary-glow"></i>Live Video Scan</h5>
+                                    <span id="scan-mode-badge" class="badge bg-secondary-custom px-3 py-2 small d-flex align-items-center">
+                                        <span class="status-indicator online me-2"></span> Passive Capture
+                                    </span>
+                                </div>
+                                
+                                <div class="camera-stream-wrapper text-center flex-grow-1 d-flex align-items-center justify-content-center position-relative bg-black" style="min-height: 380px;">
+                                    <div class="scanner-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0,0,0,0.2) 50%), linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03)); background-size: 100% 4px, 6px 100%; z-index:2;"></div>
+                                    <div class="scanner-line" style="position: absolute; left:0; width:100%; height:2px; background: linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent); animation: scanline-move 6s linear infinite; z-index:3; pointer-events:none;"></div>
+                                    
+                                    <video id="webcam-view" class="w-100 h-100 rounded" autoplay playsinline muted style="object-fit: cover; max-height: 480px; transform: scaleX(-1);"></video>
+                                    
+                                    <div class="scanner-hud">
+                                        <span>SYS_MODE: PASSIVE</span>
+                                        <span>FRAME_CAP: 30FPS</span>
+                                    </div>
+                                    <div class="scanner-hud-bottom">
+                                        <span>BROWSER_WEBCAM_ACTIVE</span>
+                                        <span id="scan-hud-time">00:00:00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="cam-controls d-flex justify-content-between align-items-center p-3 rounded" style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color);">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="status-indicator online"></span>
+                                        <span id="camera-status-text" class="text-white small fw-bold">Browser Camera Active</span>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button id="triggerSimulationBtn" class="btn btn-sm btn-primary-custom" onclick="triggerSimulation()">
+                                            <i class="bi bi-play-circle-fill me-1"></i>Simulate Check-In
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick actions -->
+                        <div class="col-12 col-lg-5 col-xl-4">
+                            <div class="glass-card p-4 h-100 d-flex flex-column gap-3">
+                                <h5 class="text-white fw-semibold mb-2 border-bottom pb-2 border-dark-blue"><i class="bi bi-lightning-charge-fill text-warning-glow me-2"></i>Quick Actions</h5>
+                                <div class="d-flex flex-column gap-3">
+                                    <a href="register.html" class="btn btn-secondary-custom text-start py-2.5 px-3 w-100 d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0 text-white fw-bold small"><i class="bi bi-person-plus-fill me-2 text-primary-glow"></i>Register Employee</h6>
+                                            <small class="text-muted" style="font-size: 0.72rem;">Enroll new profile & scan face</small>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </a>
+                                    <a href="attendance.html" class="btn btn-secondary-custom text-start py-2.5 px-3 w-100 d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0 text-white fw-bold small"><i class="bi bi-camera-video-fill me-2 text-success-glow"></i>Start Attendance</h6>
+                                            <small class="text-muted" style="font-size: 0.72rem;">Launch live scan match screen</small>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </a>
+                                    <a href="reports.html" class="btn btn-secondary-custom text-start py-2.5 px-3 w-100 d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0 text-white fw-bold small"><i class="bi bi-file-earmark-bar-graph-fill me-2 text-warning-glow"></i>View Reports</h6>
+                                            <small class="text-muted" style="font-size: 0.72rem;">Extract xlsx database registers</small>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </a>
+                                    <a href="employees.html" class="btn btn-secondary-custom text-start py-2.5 px-3 w-100 d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0 text-white fw-bold small"><i class="bi bi-people-fill me-2 text-info"></i>Employee List</h6>
+                                            <small class="text-muted" style="font-size: 0.72rem;">Manage employee directory list</small>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </a>
+                                    <a href="settings.html" class="btn btn-secondary-custom text-start py-2.5 px-3 w-100 d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="mb-0 text-white fw-bold small"><i class="bi bi-gear-fill me-2 text-silver"></i>Console Settings</h6>
+                                            <small class="text-muted" style="font-size: 0.72rem;">Thresholds, backup, database</small>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="glass-card p-4 h-100">
+                                <h6 class="text-white fw-bold mb-3 border-bottom pb-2 border-dark-blue small uppercase tracking-wide">Daily Attendance</h6>
+                                <div class="donut-chart-wrap">
+                                    <svg width="150" height="150" class="radial-progress-ring">
+                                        <circle class="radial-circle-bg" cx="75" cy="75" r="55"></circle>
+                                        <circle class="radial-circle-val" cx="75" cy="75" r="55" id="daily-gauge" style="stroke-dasharray: 345.57; stroke-dashoffset: 0;"></circle>
+                                        <text x="75" y="72" dominant-baseline="middle" text-anchor="middle" class="radial-center-text" id="daily-percent-text">0%</text>
+                                        <text x="75" y="94" dominant-baseline="middle" text-anchor="middle" class="radial-center-sub">PRESENT RATE</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="glass-card p-4 h-100">
+                                <h6 class="text-white fw-bold mb-3 border-bottom pb-2 border-dark-blue small uppercase tracking-wide">Weekly Attendance</h6>
+                                <div class="mock-chart-container">
+                                    <div class="chart-bar-wrap"><div class="chart-bar" style="height: 80%;"><span class="chart-tooltip">4 Employees</span></div><span class="chart-label">Mon</span></div>
+                                    <div class="chart-bar-wrap"><div class="chart-bar" style="height: 60%;"><span class="chart-tooltip">3 Employees</span></div><span class="chart-label">Tue</span></div>
+                                    <div class="chart-bar-wrap"><div class="chart-bar" style="height: 90%;"><span class="chart-tooltip">4 Employees</span></div><span class="chart-label">Wed</span></div>
+                                    <div class="chart-bar-wrap"><div class="chart-bar" style="height: 75%;"><span class="chart-tooltip">3 Employees</span></div><span class="chart-label">Thu</span></div>
+                                    <div class="chart-bar-wrap"><div class="chart-bar" style="height: 85%;"><span class="chart-tooltip">4 Employees</span></div><span class="chart-label">Fri</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="glass-card p-4 h-100">
+                                <h6 class="text-white fw-bold mb-3 border-bottom pb-2 border-dark-blue small uppercase tracking-wide">Monthly Trend</h6>
+                                <div class="mock-chart-container" style="align-items: center; justify-content: center;">
+                                    <svg width="100%" height="150" viewBox="0 0 200 100" preserveAspectRatio="none">
+                                        <line x1="0" y1="20" x2="200" y2="20" stroke="rgba(255,255,255,0.03)" stroke-width="1"></line>
+                                        <line x1="0" y1="50" x2="200" y2="50" stroke="rgba(255,255,255,0.03)" stroke-width="1"></line>
+                                        <line x1="0" y1="80" x2="200" y2="80" stroke="rgba(255,255,255,0.03)" stroke-width="1"></line>
+                                        <path d="M 10 90 Q 40 40 70 70 T 130 30 T 190 10" fill="none" stroke="var(--primary-glow)" stroke-width="3" stroke-linecap="round"></path>
+                                        <path d="M 10 90 Q 40 40 70 70 T 130 30 T 190 10 L 190 100 L 10 100 Z" fill="url(#monthly-chart-grad)" opacity="0.15"></path>
+                                        <defs>
+                                            <linearGradient id="monthly-chart-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stop-color="var(--primary-glow)"></stop>
+                                                <stop offset="100%" stop-color="transparent"></stop>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="glass-card p-4 h-100">
+                                <h6 class="text-white fw-bold mb-3 border-bottom pb-2 border-dark-blue small uppercase tracking-wide">Departments</h6>
+                                <div class="d-flex flex-column gap-3 mt-2">
+                                    <div>
+                                        <div class="d-flex justify-content-between text-silver small mb-1"><span>Chemical Analysis</span><strong class="text-white">100%</strong></div>
+                                        <div class="progress" style="height: 6px; background: rgba(255,255,255,0.03);"><div class="progress-bar bg-success-glow" role="progressbar" style="width: 100%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between text-silver small mb-1"><span>Research & Bio</span><strong class="text-white">92%</strong></div>
+                                        <div class="progress" style="height: 6px; background: rgba(255,255,255,0.03);"><div class="progress-bar bg-primary-glow" role="progressbar" style="width: 92%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between text-silver small mb-1"><span>Quality Assurance</span><strong class="text-white">85%</strong></div>
+                                        <div class="progress" style="height: 6px; background: rgba(255,255,255,0.03);"><div class="progress-bar bg-warning-glow" role="progressbar" style="width: 85%"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terminal Activity Screen -->
+                    <div class="glass-card p-4 mb-4">
+                        <h5 class="text-white fw-semibold border-bottom pb-2 border-dark-blue mb-3 d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-terminal-fill text-success-glow me-2"></i>Activity Terminal</span>
+                            <button class="btn btn-sm btn-link text-muted p-0 text-decoration-none small" onclick="clearTerminal()">Clear</button>
+                        </h5>
+                        <div id="terminal-screen" class="terminal-feed"></div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="border-top border-dark-blue mt-5 pt-4 pb-2 text-silver text-center text-md-start">
+                    <div class="row g-3 small">
+                        <div class="col-12 col-md-6">
+                            <strong>CRT Industries Chemical Laboratory</strong>
+                            <p class="mb-0 text-muted">Biometric Face Authentication System | Version 2.1.0-Static</p>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <span class="d-block text-muted">Contact: support@crt.lab.internal</span>
+                            <div class="mt-1 d-flex justify-content-md-end gap-3 text-center justify-content-center">
+                                <a href="#" class="text-decoration-none text-muted">Privacy Policy</a>
+                                <span class="text-muted">|</span>
+                                <a href="#" class="text-decoration-none text-muted">Terms and Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center text-muted small mt-3">
+                        &copy; 2026 CRT Industries. All rights reserved. Secure offline deployment.
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- Static Database Initialization ---
+        if (!localStorage.getItem('employees')) {
+            const defaultEmployees = [
+                { EmployeeID: "CRT-101", Name: "Hariharan", Department: "Chemical Analysis", Designation: "Lead Chemist", Phone: "9876543210", Email: "hari@crt.com", DateOfJoining: "2026-01-10", CreatedAt: "10-01-2026 09:00:00" },
+                { EmployeeID: "CRT-102", Name: "Sarah Connor", Department: "Research & Development", Designation: "Bio Analyst", Phone: "9123456789", Email: "sarah@crt.com", DateOfJoining: "2026-03-15", CreatedAt: "15-03-2026 10:30:00" },
+                { EmployeeID: "CRT-103", Name: "Arthur Dent", Department: "Quality Assurance", Designation: "Safety Inspector", Phone: "9988776655", Email: "arthur@crt.com", DateOfJoining: "2026-05-01", CreatedAt: "01-05-2026 08:45:00" }
+            ];
+            localStorage.setItem('employees', JSON.stringify(defaultEmployees));
+        }
+
+        if (!localStorage.getItem('attendance')) {
+            const defaultAttendance = [
+                { employee_id: "CRT-101", name: "Hariharan", department: "Chemical Analysis", designation: "Lead Chemist", date: "09-07-2026", time: "09:02:14 AM", status: "Present" },
+                { employee_id: "CRT-102", name: "Sarah Connor", department: "Research & Development", designation: "Bio Analyst", date: "09-07-2026", time: "09:12:45 AM", status: "Present" }
+            ];
+            localStorage.setItem('attendance', JSON.stringify(defaultAttendance));
+        }
+
+        // --- Clock Update ---
+        function updateClock() {
+            const timeEl = document.getElementById('digital-clock');
+            const dateEl = document.getElementById('digital-date');
+            const hudEl = document.getElementById('scan-hud-time');
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            if (timeEl) timeEl.textContent = timeStr;
+            if (dateEl) dateEl.textContent = dateStr;
+            if (hudEl) hudEl.textContent = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- Terminal Logging ---
+        function writeLog(message, type = "info") {
+            const screen = document.getElementById('terminal-screen');
+            if (!screen) return;
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `<span class="terminal-time">[${timeStr}]</span><span class="terminal-msg ${type}">${message}</span>`;
+            screen.appendChild(line);
+            screen.scrollTop = screen.scrollHeight;
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminal-screen').innerHTML = '';
+            writeLog("Terminal activity cleared.", "info");
+        }
+
+        // --- Webcam Video Stream ---
+        const video = document.getElementById('webcam-view');
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                writeLog("Webcam sensor engaged successfully.", "info");
+            })
+            .catch(err => {
+                console.error("Camera access failed:", err);
+                writeLog("No hardware webcam detected. Simulating camera overlay streams.", "warning");
+                // Mock camera stream graphic fallback
+                const parent = video.parentElement;
+                video.remove();
+                
+                const fallback = document.createElement('div');
+                fallback.className = 'text-center p-5';
+                fallback.innerHTML = `
+                    <i class="bi bi-camera-video-off text-danger fs-1 mb-3"></i>
+                    <p class="text-white fw-bold mb-1">Webcam Sensor Offline</p>
+                    <p class="text-muted small">Place subject in front of node camera or enable device security access permissions.</p>
+                `;
+                parent.appendChild(fallback);
+                document.getElementById('camera-status-text').textContent = "Camera Feed Offline";
+                document.getElementById('camera-status-text').previousElementSibling.className = "status-indicator offline";
+            });
+
+        // --- Stats & Gauges --
+        function updateStats() {
+            const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+            const attendance = JSON.parse(localStorage.getItem('attendance') || '[]');
+            
+            const total = employees.length;
+            
+            // Get unique checkins for today (09-07-2026 or today)
+            const todayDate = "09-07-2026"; 
+            const todayCheckins = attendance.filter(a => a.date === todayDate);
+            const present = new Set(todayCheckins.map(c => c.employee_id)).size;
+            const absent = Math.max(0, total - present);
+            
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-present').textContent = present;
+            document.getElementById('stat-absent').textContent = absent;
+            
+            // Calculate rate
+            const rate = total > 0 ? Math.round((present / total) * 100) : 0;
+            document.getElementById('daily-percent-text').textContent = rate + "%";
+            
+            const r = 55;
+            const circ = 2 * Math.PI * r;
+            const offset = circ - (rate / 100) * circ;
+            const gauge = document.getElementById('daily-gauge');
+            gauge.style.strokeDasharray = circ;
+            gauge.style.strokeDashoffset = offset;
+        }
+
+        // --- Simulation ---
+        function triggerSimulation() {
+            const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+            if (employees.length === 0) {
+                writeLog("No employee profiles in database. Please register first.", "warning");
+                return;
+            }
+            
+            // Pick a random employee
+            const idx = Math.floor(Math.random() * employees.length);
+            const emp = employees[idx];
+            
+            const attendance = JSON.parse(localStorage.getItem('attendance') || '[]');
+            const todayDate = "09-07-2026";
+            
+            // Check if already checked in
+            const isDuplicate = attendance.some(a => a.employee_id === emp.EmployeeID && a.date === todayDate);
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            
+            if (isDuplicate) {
+                writeLog(`FACE ID WARNING: Duplicate scan for ${emp.Name} (${emp.EmployeeID}) - already checked in today.`, "warning");
+                document.getElementById('stat-attempts').textContent = parseInt(document.getElementById('stat-attempts').textContent) + 1;
+            } else {
+                const newCheckin = {
+                    employee_id: emp.EmployeeID,
+                    name: emp.Name,
+                    department: emp.Department,
+                    designation: emp.Designation,
+                    date: todayDate,
+                    time: timeStr,
+                    status: "Present"
+                };
+                attendance.push(newCheckin);
+                localStorage.setItem('attendance', JSON.stringify(attendance));
+                writeLog(`FACE ID CHECK-IN: Verified employee ${emp.Name} (${emp.EmployeeID}) at ${timeStr}. Access Granted.`, "success");
+                updateStats();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            writeLog("Consoles database online (localstorage).", "info");
+            updateStats();
+        });
+    </script>
+</body>
+</html>

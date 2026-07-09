@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - CRT Industries</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .settings-tab {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--silver);
+            text-align: left;
+            padding: 14px 20px;
+            transition: all var(--transition-speed) ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .settings-tab:hover, .settings-tab.active {
+            background: var(--primary-glow-trans);
+            color: #fff;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .settings-tab i { font-size: 1.25rem; }
+        .settings-section-card {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .settings-section-card.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <header class="navbar navbar-expand-lg sticky-top main-navbar">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="logo-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="brand-text ms-2">CRT INDUSTRIES <span class="sub-brand">CHEMICAL LAB</span></span>
+            </a>
+            
+            <div class="d-none d-lg-flex align-items-center ms-auto">
+                <div class="system-status me-4">
+                    <span class="status-indicator online"></span>
+                    <span class="status-label">Database Online</span>
+                </div>
+                <div class="clock-display d-flex align-items-center">
+                    <i class="bi bi-clock-fill text-primary-glow me-2"></i>
+                    <span id="digital-clock" class="digital-time">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column h-100 justify-content-between">
+                    <div>
+                        <div class="user-profile-section text-center py-3 mb-4">
+                            <div class="profile-avatar mb-2">
+                                <i class="bi bi-person-badge-fill text-primary-glow"></i>
+                            </div>
+                            <h6 class="profile-name">Administrator</h6>
+                            <span class="profile-role">Secure Operator</span>
+                        </div>
+
+                        <ul class="nav flex-column sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">
+                                    <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="register.html">
+                                    <i class="bi bi-person-plus-fill me-2"></i> Register Employee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="attendance.html">
+                                    <i class="bi bi-camera-video-fill me-2"></i> Live Attendance
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="employees.html">
+                                    <i class="bi bi-people-fill me-2"></i> Employee Directory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="reports.html">
+                                    <i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Attendance Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="settings.html">
+                                    <i class="bi bi-gear-fill me-2"></i> Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="help.html">
+                                    <i class="bi bi-question-circle-fill me-2"></i> Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Page Content Frame -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content d-flex flex-column justify-content-between">
+                <div>
+                    <!-- Welcome Title -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <h2 class="text-white fw-bold mb-1">System Settings</h2>
+                            <p class="text-silver mb-0 small">Configure laboratory authentication thresholds, database files, and camera devices.</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Left Navigation Tabs -->
+                        <div class="col-12 col-md-4 col-xl-3">
+                            <div class="d-flex flex-column gap-2">
+                                <button class="settings-tab active" onclick="switchSection('general', this)">
+                                    <i class="bi bi-sliders me-3 text-primary-glow"></i>General Settings
+                                </button>
+                                <button class="settings-tab" onclick="switchSection('camera', this)">
+                                    <i class="bi bi-camera-fill me-3 text-primary-glow"></i>Camera Controls
+                                </button>
+                                <button class="settings-tab" onclick="switchSection('attendance', this)">
+                                    <i class="bi bi-alarm-fill me-3 text-primary-glow"></i>Attendance Rules
+                                </button>
+                                <button class="settings-tab" onclick="switchSection('database', this)">
+                                    <i class="bi bi-database-fill-gear me-3 text-primary-glow"></i>Database & Storage
+                                </button>
+                                <button class="settings-tab" onclick="switchSection('appearance', this)">
+                                    <i class="bi bi-palette-fill me-3 text-primary-glow"></i>Appearance Style
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Configurations -->
+                        <div class="col-12 col-md-8 col-xl-9">
+                            <!-- General Panel -->
+                            <div id="section-general" class="glass-card p-4 settings-section-card active">
+                                <h5 class="text-white fw-semibold mb-3 border-bottom pb-2 border-dark-blue">
+                                    <i class="bi bi-sliders text-primary-glow me-2"></i>General Registry Info
+                                </h5>
+                                <form onsubmit="saveSettings(event, 'General configuration saved.')">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label-custom">Company Name</label>
+                                            <input type="text" class="form-control form-control-custom w-100" value="CRT Industries" required>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label-custom">Laboratory Name</label>
+                                            <input type="text" class="form-control form-control-custom w-100" value="Chemical Laboratory A" required>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label-custom">Time Zone</label>
+                                            <select class="form-select form-control-custom w-100">
+                                                <option value="IST" selected>India Standard Time (IST)</option>
+                                                <option value="GMT">Greenwich Mean Time (GMT)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom mt-4">Save Changes</button>
+                                </form>
+                            </div>
+
+                            <!-- Camera Panel -->
+                            <div id="section-camera" class="glass-card p-4 settings-section-card">
+                                <h5 class="text-white fw-semibold mb-3 border-bottom pb-2 border-dark-blue">
+                                    <i class="bi bi-camera-fill text-primary-glow me-2"></i>Camera Sensory Controls
+                                </h5>
+                                <form onsubmit="saveSettings(event, 'Camera parameters updated.')">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label-custom">Camera Sensor Selection</label>
+                                            <select class="form-select form-control-custom w-100">
+                                                <option value="0" selected>Webcam sensor 0 (Default)</option>
+                                                <option value="1">External camera index 1</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label-custom">Capture Resolution</label>
+                                            <select class="form-select form-control-custom w-100">
+                                                <option value="VGA" selected>VGA 640 x 480 (Recommended)</option>
+                                                <option value="HD">HD 1280 x 720</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label-custom">Recognition Distance Tolerance</label>
+                                            <select class="form-select form-control-custom w-100">
+                                                <option value="0.45" selected>0.45 (Optimal)</option>
+                                                <option value="0.40">0.40 (Strict)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom mt-4">Save Configuration</button>
+                                </form>
+                            </div>
+
+                            <!-- Attendance Rules Panel -->
+                            <div id="section-attendance" class="glass-card p-4 settings-section-card">
+                                <h5 class="text-white fw-semibold mb-3 border-bottom pb-2 border-dark-blue">
+                                    <i class="bi bi-alarm-fill text-primary-glow me-2"></i>Attendance Criteria
+                                </h5>
+                                <form onsubmit="saveSettings(event, 'Time limits saved.')">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label-custom">Shift Start Time</label>
+                                            <input type="time" class="form-control form-control-custom w-100" value="09:00">
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label-custom">Shift End Time</label>
+                                            <input type="time" class="form-control form-control-custom w-100" value="18:00">
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label-custom">Late Arrival Limit</label>
+                                            <input type="time" class="form-control form-control-custom w-100" value="09:15">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom mt-4">Save Rules</button>
+                                </form>
+                            </div>
+
+                            <!-- Database Panel -->
+                            <div id="section-database" class="glass-card p-4 settings-section-card">
+                                <h5 class="text-white fw-semibold mb-3 border-bottom pb-2 border-dark-blue">
+                                    <i class="bi bi-database-fill-gear text-primary-glow me-2"></i>Database & Storage
+                                </h5>
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <div class="p-3 rounded border border-dark-blue h-100 d-flex flex-column justify-content-between" style="background: rgba(15, 23, 42, 0.3);">
+                                            <div>
+                                                <h6 class="text-white fw-bold mb-1">Compile Database Backup</h6>
+                                                <p class="text-muted small">Dump all registered employee local face encoding profiles into a client JSON file backup.</p>
+                                            </div>
+                                            <button onclick="backupDatabase()" class="btn btn-sm btn-primary-custom mt-3 align-self-start"><i class="bi bi-database-fill-up me-1"></i>Backup Database</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="p-3 rounded border border-dark-blue h-100 d-flex flex-column justify-content-between" style="background: rgba(15, 23, 42, 0.3);">
+                                            <div>
+                                                <h6 class="text-white fw-bold mb-1">Restore Registers Backup</h6>
+                                                <p class="text-muted small">Load and merge employee JSON data snapshot files directly into localStorage.</p>
+                                            </div>
+                                            <input type="file" id="restoreFile" class="d-none" onchange="restoreDatabase(this)">
+                                            <button onclick="document.getElementById('restoreFile').click()" class="btn btn-sm btn-secondary-custom mt-3 align-self-start"><i class="bi bi-database-fill-down me-1"></i>Restore Backup</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button onclick="clearLocalStorage()" class="btn btn-sm btn-danger-custom"><i class="bi bi-trash3-fill me-1"></i>Wipe System Database (Reset)</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Appearance Panel -->
+                            <div id="section-appearance" class="glass-card p-4 settings-section-card">
+                                <h5 class="text-white fw-semibold mb-3 border-bottom pb-2 border-dark-blue">
+                                    <i class="bi bi-palette-fill text-primary-glow me-2"></i>Appearance Styles
+                                </h5>
+                                <form onsubmit="saveSettings(event, 'Theme configuration saved.')">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label-custom">Visual Palette Mode</label>
+                                            <div class="d-flex gap-3 mt-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="themeMode" id="darkRadio" value="dark" checked>
+                                                    <label class="form-check-label text-white small" for="darkRadio">Dark Navy Theme (Default)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom mt-4">Apply Style</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Clock
+        function updateClock() {
+            const timeEl = document.getElementById('digital-clock');
+            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function switchSection(sectionId, btn) {
+            document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.querySelectorAll('.settings-section-card').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`section-${sectionId}`).classList.add('active');
+        }
+
+        function saveSettings(event, successMsg) {
+            event.preventDefault();
+            alert("Success: " + successMsg);
+        }
+
+        function backupDatabase() {
+            const data = {
+                employees: JSON.parse(localStorage.getItem('employees') || '[]'),
+                attendance: JSON.parse(localStorage.getItem('attendance') || '[]')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'CRT_Database_Backup.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function restoreDatabase(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.employees) {
+                        localStorage.setItem('employees', JSON.stringify(data.employees));
+                    }
+                    if (data.attendance) {
+                        localStorage.setItem('attendance', JSON.stringify(data.attendance));
+                    }
+                    alert("Database restored successfully!");
+                } catch (err) {
+                    alert("Failed to parse backup JSON file.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearLocalStorage() {
+            if (confirm("WARNING: Are you sure you want to delete ALL employees and attendance logs from this local registry?\nThis cannot be undone.")) {
+                localStorage.removeItem('employees');
+                localStorage.removeItem('attendance');
+                alert("Database wiped. Reloading...");
+                window.location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

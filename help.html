@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Help & Manual - CRT Industries</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <header class="navbar navbar-expand-lg sticky-top main-navbar">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="logo-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="brand-text ms-2">CRT INDUSTRIES <span class="sub-brand">CHEMICAL LAB</span></span>
+            </a>
+            
+            <div class="d-none d-lg-flex align-items-center ms-auto">
+                <div class="system-status me-4">
+                    <span class="status-indicator online"></span>
+                    <span class="status-label">Database Online</span>
+                </div>
+                <div class="clock-display d-flex align-items-center">
+                    <i class="bi bi-clock-fill text-primary-glow me-2"></i>
+                    <span id="digital-clock" class="digital-time">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column h-100 justify-content-between">
+                    <div>
+                        <div class="user-profile-section text-center py-3 mb-4">
+                            <div class="profile-avatar mb-2">
+                                <i class="bi bi-person-badge-fill text-primary-glow"></i>
+                            </div>
+                            <h6 class="profile-name">Administrator</h6>
+                            <span class="profile-role">Secure Operator</span>
+                        </div>
+
+                        <ul class="nav flex-column sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">
+                                    <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="register.html">
+                                    <i class="bi bi-person-plus-fill me-2"></i> Register Employee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="attendance.html">
+                                    <i class="bi bi-camera-video-fill me-2"></i> Live Attendance
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="employees.html">
+                                    <i class="bi bi-people-fill me-2"></i> Employee Directory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="reports.html">
+                                    <i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Attendance Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings.html">
+                                    <i class="bi bi-gear-fill me-2"></i> Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="help.html">
+                                    <i class="bi bi-question-circle-fill me-2"></i> Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Page Content Frame -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content d-flex flex-column justify-content-between">
+                <div>
+                    <!-- Welcome Title -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <h2 class="text-white fw-bold mb-1">System Help Center</h2>
+                            <p class="text-silver mb-0 small">Operator manuals and guidance tips for CRT Face ID Attendance console.</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-8">
+                            <!-- FAQ Section -->
+                            <div class="glass-card p-4 d-flex flex-column gap-3">
+                                <h5 class="text-white fw-semibold border-bottom pb-2 border-dark-blue mb-0"><i class="bi bi-journal-text text-primary-glow me-2"></i>Biometric Scanner Manual</h5>
+                                
+                                <div class="accordion accordion-flush" id="accordionHelp" style="--bs-accordion-bg: transparent; --bs-accordion-color: var(--silver); --bs-accordion-btn-color: #fff; --bs-accordion-btn-bg: transparent; --bs-accordion-btn-icon-transform: rotate(-360deg);">
+                                    <div class="accordion-item border-bottom border-dark-blue">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed px-0 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                                How do I register a new employee face template?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionHelp">
+                                            <div class="accordion-body px-0 text-silver small">
+                                                Go to the <strong>Register Employee</strong> panel, fill out the form metadata (Name, ID, Department, Designation, and Date of Joining), and click "Start Camera". Stand in front of the camera. The biometric console will automatically start capturing frames when a face is detected. Adjust your face based on the guidance prompt at the bottom of the screen (Look straight, Look Left, Look Right, etc.). Once 30 frames are captured, the server compiles the template.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="accordion-item border-bottom border-dark-blue">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed px-0 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                What should I do if the camera feed fails to load?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionHelp">
+                                            <div class="accordion-body px-0 text-silver small">
+                                                Ensure the webcam is connected to the laptop/desktop. Check the device permissions in your browser to verify that the website has access to the camera hardware. If index conflicts occur, navigate to <strong>Settings > Camera Controls</strong> and try changing the index selection from 0 to 1.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item border-bottom border-dark-blue">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed px-0 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                Where are attendance files and profile images stored?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionHelp">
+                                            <div class="accordion-body px-0 text-silver small">
+                                                The CRT terminal operates strictly as an offline node for maximum laboratory security. All captured facial datasets and check-in ledgers are stored locally in the server's workspace folder (e.g. `dataset/` and `attendance/` directories) and are not synced with external networks.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sidebar Info Panel -->
+                        <div class="col-12 col-lg-4">
+                            <div class="glass-card p-4 h-100 d-flex flex-column gap-3">
+                                <h5 class="text-white fw-semibold border-bottom pb-2 border-dark-blue mb-0"><i class="bi bi-info-circle text-primary-glow me-2"></i>Quick Help</h5>
+                                <div class="small text-silver d-flex flex-column gap-2">
+                                    <div>
+                                        <strong class="text-white d-block">Optimal Capture Conditions:</strong>
+                                        Ensure the subject's face is evenly lit. Avoid strong backlights or shadow casting. Remove glasses and caps during the registration process for higher recognition accuracy.
+                                    </div>
+                                    <div class="mt-2">
+                                        <strong class="text-white d-block">Contact Security Admin:</strong>
+                                        If you require profile data modifications or system resets, contact:
+                                        <code class="d-block text-primary-glow mt-1 font-monospace">admin@crt.lab.internal</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Clock
+        function updateClock() {
+            const timeEl = document.getElementById('digital-clock');
+            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>

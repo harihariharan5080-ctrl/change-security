@@ -1,0 +1,9 @@
+flask
+opencv-python
+numpy
+pandas
+pillow
+openpyxl
+# Note: face_recognition is listed but the app is built with a native OpenCV face fallback 
+# in case installing face_recognition/dlib fails on Windows.
+face_recognition
